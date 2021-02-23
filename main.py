@@ -7,3 +7,4 @@ board = Board(size, p)
 screenSize = (500,500)
 game = Game(board, screenSize)
 game.run()
+#yo nerd
