@@ -5,6 +5,10 @@ class Board():
     def __init__(self, dim, p):
         self.dim = dim
         self.p = p
+        self.explode = False
+        self.won = False
+        self.numClicked = 0
+        self.numNonBombs = 0
         self.setBoard()
 
     def setBoard(self):
@@ -13,6 +17,8 @@ class Board():
             row = []
             for col in range(self.dim[1]):
                 isBomb = random() < self.p
+                if (not isBomb):
+                    self.numNonBombs += 1
                 piece = Piece(isBomb)
                 row.append(piece)
             self.board.append(row)
@@ -41,3 +47,41 @@ class Board():
 
     def getPiece(self, index):
         return self.board[index[0]][index[1]]
+
+    #handles click on board
+    def handleClick(self, piece, flag):
+        #cannot click on piece that is flagged or that has been clicked
+        if (piece.getClicked() or (not flag and piece.getFlagged())):
+            return
+
+        # if flag then get flag then set proper value
+        if (flag):
+            piece.setFlag()
+            return
+
+        # else we left clicked
+        piece.click()
+
+        # if the piece that we clicked has bomb we explode
+        if (piece.getIsBomb()):
+            self.explode = True
+            return
+        
+        # increment how many piece we have clicked
+        self.numClicked += 1
+
+        if (piece.getNumOfBombs() != 0):
+            return
+        
+        for neighbor in piece.getNeighbors():
+            if (not neighbor.getIsBomb() and not neighbor.getClicked()):
+                self.handleClick(neighbor,False)
+
+        
+    def getExplode(self):
+        return self.explode
+    
+    def getWon(self):
+        return self.numNonBombs == self.numClicked
+
+

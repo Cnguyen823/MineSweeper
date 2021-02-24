@@ -19,9 +19,18 @@ class Piece():
     
     def setNumOfBombs(self):
         self.numOfBombs = 0
-        for piece in self.neighbors:
-            if(piece.getIsBomb()):
+        for neighbor in self.neighbors:
+            if(neighbor.getIsBomb()):
                 self.numOfBombs += 1
 
     def getNumOfBombs(self):
         return self.numOfBombs
+    
+    def setFlag(self):
+        self.flagged = not self.flagged
+    
+    def click(self):
+        self.clicked = True
+    
+    def getNeighbors(self):
+        return self.neighbors
