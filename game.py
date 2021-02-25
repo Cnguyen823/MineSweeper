@@ -71,7 +71,7 @@ class Game():
         if (piece.getClicked()):
             string = "bomb-at-clicked-block" if piece.getIsBomb() else str(piece.getNumOfBombs())
         else:
-            string = "flag" if piece.getFlagged() else "empty-block"
+            string = "Flag-Pins-Armenia-Vietnam" if piece.getFlagged() else "empty-block"
 
         return self.imageDict[string]
     
