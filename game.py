@@ -3,12 +3,11 @@ import os
 from time import sleep
 
 class Game():
-    def __init__(self, board, screenSize, agent):
+    def __init__(self, board, screenSize):
         self.board = board
         self.screenSize = screenSize
         self.imageSize = self.screenSize[0] // self.board.getSize()[1], self.screenSize[1] // self.board.getSize()[0]
         self.loadImages()
-        self.agent = agent
     
     def run(self):
         pygame.init()
@@ -87,4 +86,4 @@ class Game():
         self.board.handleClick(piece, rightClick)
         
         # updates the status of the agent
-        self.agent.setBoardStatus(piece)
+        self.board.setBoardStatus(piece)

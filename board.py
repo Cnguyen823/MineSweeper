@@ -9,6 +9,9 @@ class Board():
         self.numClicked = 0
         self.numNonBombs = 0
         self.setBoard()
+        # layout of dictionary -> piece : [clue, safe neighbors, mine neighbors, hidden neighbors]
+        self.boardStatus = {}
+        self.flagList = []
 
     def setBoard(self):
         self.board = []
@@ -74,11 +77,72 @@ class Board():
         
         for neighbor in piece.getNeighbors():
             if (not neighbor.getIsBomb() and not neighbor.getClicked()):
-                self.handleClick(neighbor,False)
-                ##add here yoo
-                #self.agent.setBoardStatus(piece)
+                self.handleClick(neighbor,False)   
+                self.setBoardStatus(neighbor)             
 
-        
+    
+     # Sets initial information and clues of each piece clicked
+    def setBoardStatus(self, piece):
+        safeNeighbors = 0
+        mineNeighbors = 0
+        hiddenNeighbors = 0
+        clue = piece.getNumOfBombs()
+
+        #if piece is bomb dont keep track end game
+        if piece.getIsBomb():
+            return
+
+        # if piece is flag we append to flag list and do not need to keep track of its clues in board status 
+        if piece.getFlagged():
+            self.flagList.append(piece.getIndex())
+            print(self.flagList)
+            return
+
+        # if piece was previously flagged but is no longer we remove from flag list and add to board status
+        if piece.getIndex() in self.flagList:
+            self.flagList.remove(piece.getIndex())
+
+        # Updates the clues of neighbor if clicked and gets clues for current piece
+        for neighbor in piece.getNeighbors():
+            if neighbor.getFlagged():
+                mineNeighbors += 1
+                indexOfPiece = neighbor.getIndex()
+                if indexOfPiece not in self.flagList:
+                    temp = self.boardStatus.pop(indexOfPiece,None)
+                    self.flagList.append(indexOfPiece)
+            elif neighbor.getClicked():
+                safeNeighbors += 1
+                self.updateNeighborStatus(neighbor)
+            else:
+                hiddenNeighbors += 1
+
+        value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors]
+
+        # Sets index of piece as key with its clues as the value
+        self.boardStatus[piece.getIndex()] = value
+        print(self.boardStatus)
+        print(self.flagList)
+
+    
+    # Updates the clues and information of pieces already clicked
+    def updateNeighborStatus(self, piece):
+        safeNeighbors = 0
+        mineNeighbors = 0
+        hiddenNeighbors = 0
+        clue = piece.getNumOfBombs()
+            
+        for neighbor in piece.getNeighbors():
+            if neighbor.getFlagged():
+                mineNeighbors += 1
+            elif neighbor.getClicked():
+                safeNeighbors += 1
+            else:
+                hiddenNeighbors += 1
+
+        value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors]
+
+        self.boardStatus[piece.getIndex()] = value
+    
     def getExplode(self):
         return self.explode
     
