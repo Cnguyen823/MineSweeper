@@ -75,6 +75,7 @@ class Board():
         if (piece.getNumOfBombs() != 0):
             return
         
+        # recursively click neighbors for empty spaces update board status along with recursive clicks
         for neighbor in piece.getNeighbors():
             if (not neighbor.getIsBomb() and not neighbor.getClicked()):
                 self.handleClick(neighbor,False)   
@@ -98,9 +99,12 @@ class Board():
             print(self.flagList)
             return
 
-        # if piece was previously flagged but is no longer we remove from flag list and add to board status
+        # if piece was previously flagged but is no longer we remove from flag list
         if piece.getIndex() in self.flagList:
             self.flagList.remove(piece.getIndex())
+            print(self.flagList)
+            print(self.boardStatus)
+            return
 
         # Updates the clues of neighbor if clicked and gets clues for current piece
         for neighbor in piece.getNeighbors():
