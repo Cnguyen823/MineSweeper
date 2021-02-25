@@ -1,12 +1,15 @@
 import pygame
 import os
 from time import sleep
+from pynput.mouse import Button, Controller
+
 class Game():
-    def __init__(self, board, screenSize):
+    def __init__(self, board, screenSize, agent):
         self.board = board
         self.screenSize = screenSize
         self.imageSize = self.screenSize[0] // self.board.getSize()[1], self.screenSize[1] // self.board.getSize()[0]
         self.loadImages()
+        self.agent = agent
     
     def run(self):
         pygame.init()
@@ -21,6 +24,7 @@ class Game():
                 if (event.type == pygame.MOUSEBUTTONDOWN):
                     # gets the position of where the mouse was clicked
                     position = pygame.mouse.get_pos()
+                    
                     
                     # checks if click was right click or left click
                     rightClick = pygame.mouse.get_pressed()[2]
@@ -81,3 +85,6 @@ class Game():
         
         # passes the piece to board to handle functionality of the click
         self.board.handleClick(piece, rightClick)
+        
+        # updates the status of the agent
+        self.agent.setBoardStatus(piece, index)
