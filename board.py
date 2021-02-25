@@ -99,15 +99,11 @@ class Board():
             for neighbor in piece.getNeighbors():
                 if neighbor.getClicked():
                     self.updateNeighborStatus(neighbor)
-            print(self.flagList)
-            print(self.boardStatus)
             return
 
         # if piece was previously flagged but is no longer we remove from flag list
         if piece.getIndex() in self.flagList:
             self.flagList.remove(piece.getIndex())
-            print(self.flagList)
-            print(self.boardStatus)
             return
 
         # Updates the clues of neighbor if clicked and gets clues for current piece
@@ -124,12 +120,12 @@ class Board():
             else:
                 hiddenNeighbors += 1
 
-        value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors]
+        value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors, "N/A"]
 
         # Sets index of piece as key with its clues as the value
         self.boardStatus[piece.getIndex()] = value
-        print(self.boardStatus)
-        print(self.flagList)
+        
+        self.setDictionaryStrategy()
 
     
     # Updates the clues and information of pieces already clicked
@@ -151,15 +147,26 @@ class Board():
             else:
                 hiddenNeighbors += 1
 
-        value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors]
+        value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors, "N/A"]
 
         self.boardStatus[piece.getIndex()] = value
+
+    def setDictionaryStrategy(self):
+        for values in self.boardStatus.values():
+            if values[0] == 0:
+                values[4] = "N/A"
+            elif values[0] - values[2] == values[3]:
+                values[4] = "NeighborsAreBombs"
+            else:
+                values[4] = "Unsure"
     
     def getExplode(self):
         return self.explode
     
     def getWon(self):
         return self.numNonBombs == self.numClicked
+
+    
 
 
 

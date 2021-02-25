@@ -87,3 +87,5 @@ class Game():
         
         # updates the status of the agent
         self.board.setBoardStatus(piece)
+
+        print(self.board.boardStatus)
