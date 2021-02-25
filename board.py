@@ -89,14 +89,18 @@ class Board():
         hiddenNeighbors = 0
         clue = piece.getNumOfBombs()
 
-        #if piece is bomb dont keep track end game
+        # if piece is bomb dont keep track end game
         if piece.getIsBomb():
             return
 
-        # if piece is flag we append to flag list and do not need to keep track of its clues in board status 
+        # if piece is flag we append to flag list and update its neighbors do not need to keep track of its clues in board status 
         if piece.getFlagged():
             self.flagList.append(piece.getIndex())
+            for neighbor in piece.getNeighbors():
+                if neighbor.getClicked():
+                    self.updateNeighborStatus(neighbor)
             print(self.flagList)
+            print(self.boardStatus)
             return
 
         # if piece was previously flagged but is no longer we remove from flag list
@@ -134,7 +138,11 @@ class Board():
         mineNeighbors = 0
         hiddenNeighbors = 0
         clue = piece.getNumOfBombs()
-            
+        
+        # Dont Update if its a flag
+        if piece.getFlagged() or not piece.getClicked():
+            return
+
         for neighbor in piece.getNeighbors():
             if neighbor.getFlagged():
                 mineNeighbors += 1
