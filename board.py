@@ -1,6 +1,5 @@
 from piece import Piece
 from random import random
-
 class Board():
     def __init__(self, dim, p):
         self.dim = dim
@@ -76,6 +75,8 @@ class Board():
         for neighbor in piece.getNeighbors():
             if (not neighbor.getIsBomb() and not neighbor.getClicked()):
                 self.handleClick(neighbor,False)
+                ##add here yoo
+                #self.agent.setBoardStatus(piece)
 
         
     def getExplode(self):

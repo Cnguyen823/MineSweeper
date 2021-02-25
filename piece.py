@@ -3,6 +3,7 @@ class Piece():
         self.isBomb = isBomb
         self.clicked = False
         self.flagged = False
+        self.index = ()
 
     def getIsBomb(self):
         return self.isBomb
@@ -34,3 +35,10 @@ class Piece():
     
     def getNeighbors(self):
         return self.neighbors
+
+    def setIndex(self, index):
+        self.index = index
+
+    def getIndex(self):
+        return self.index
+    

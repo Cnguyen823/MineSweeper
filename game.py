@@ -1,7 +1,6 @@
 import pygame
 import os
 from time import sleep
-from pynput.mouse import Button, Controller
 
 class Game():
     def __init__(self, board, screenSize, agent):
@@ -47,6 +46,7 @@ class Game():
         for row in range(self.board.getSize()[0]):
             for col in range(self.board.getSize()[1]):
                 piece = self.board.getPiece((row, col))
+                piece.setIndex((row,col))
                 image = self.getImage(piece)
                 self.gui.blit(image, topLeft)
                 topLeft = topLeft[0] + self.imageSize[0], topLeft[1]
@@ -87,4 +87,4 @@ class Game():
         self.board.handleClick(piece, rightClick)
         
         # updates the status of the agent
-        self.agent.setBoardStatus(piece, index)
+        self.agent.setBoardStatus(piece)
