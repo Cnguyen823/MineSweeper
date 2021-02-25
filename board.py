@@ -12,6 +12,7 @@ class Board():
         # layout of dictionary -> piece : [clue, safe neighbors, mine neighbors, hidden neighbors]
         self.boardStatus = {}
         self.flagList = []
+        self.finishedList = []
 
     def setBoard(self):
         self.board = []
@@ -93,6 +94,10 @@ class Board():
         if piece.getIsBomb():
             return
 
+        # don't add piece to list if it's already been solved
+        if piece.getIndex() in self.finishedList:
+            return
+
         # if piece is flag we append to flag list and update its neighbors do not need to keep track of its clues in board status 
         if piece.getFlagged():
             self.flagList.append(piece.getIndex())
@@ -139,6 +144,9 @@ class Board():
         if piece.getFlagged() or not piece.getClicked():
             return
 
+        if piece.getIndex() in self.finishedList:
+            return
+
         for neighbor in piece.getNeighbors():
             if neighbor.getFlagged():
                 mineNeighbors += 1
@@ -159,6 +167,13 @@ class Board():
                 values[4] = "NeighborsAreBombs"
             else:
                 values[4] = "Unsure"
+    
+    def cleanDictionary(self):
+        for keys, values in self.boardStatus.copy().items():
+            if values[4] == "NeighborsAreBombs" or values[3] == 0:
+                self.boardStatus.pop(keys)
+                self.finishedList.append(keys)
+
     
     def getExplode(self):
         return self.explode
