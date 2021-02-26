@@ -142,6 +142,7 @@ class Board():
         
         # Dont Update if its a flag
         if piece.getFlagged() or not piece.getClicked():
+            # May have to update all the pieces that are neighbors of the flagged piece passed in.
             return
 
         if piece.getIndex() in self.finishedList:
@@ -158,19 +159,21 @@ class Board():
         value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors, "N/A"]
 
         self.boardStatus[piece.getIndex()] = value
-
+ 
     def setDictionaryStrategy(self):
         for values in self.boardStatus.values():
             if values[0] == 0:
                 values[4] = "N/A"
             elif values[0] - values[2] == values[3]:
                 values[4] = "NeighborsAreBombs"
+            elif (8 - values[0]) - values[1] == values[3]:
+                values[4] = "NeighborsAreSafe"
             else:
                 values[4] = "Unsure"
     
     def cleanDictionary(self):
         for keys, values in self.boardStatus.copy().items():
-            if values[4] == "NeighborsAreBombs" or values[3] == 0:
+            if values[4] == "NeighborsAreBombs" or values[3] == 0 or values[4] == "NeighborsAreSafe":
                 self.boardStatus.pop(keys)
                 self.finishedList.append(keys)
 
