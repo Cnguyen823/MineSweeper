@@ -13,6 +13,10 @@ class Game():
         pygame.init()
         self.gui = pygame.display.set_mode(self.screenSize)
         running = True
+        rightClick = False
+
+        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(self.screenSize[0] // 2, self.screenSize[1] // 2)))
+
         while running:
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
@@ -21,14 +25,18 @@ class Game():
                 # when mouse is pressed
                 if (event.type == pygame.MOUSEBUTTONDOWN):
                     # gets the position of where the mouse was clicked
-                    position = pygame.mouse.get_pos()
-                    
                     
                     # checks if click was right click or left click
-                    rightClick = pygame.mouse.get_pressed()[2]
+
+                    if event.button == 1:
+                        rightClick = False
+                    elif event.button == 3:
+                        rightClick = True
+                    
+                    print(rightClick)
 
                     # handles the click based on what was pressed 
-                    self.handleClick(position, rightClick)
+                    self.handleClick(event.pos, rightClick)
 
                     self.board.cleanDictionary()
 
@@ -44,6 +52,7 @@ class Game():
                 elif (self.board.getExplode()):
                     print("sucks to suck")
                     running = False
+
 
     def drawBoard(self):
         topLeft = (0,0)
@@ -79,6 +88,7 @@ class Game():
     # Converts positon into an index
     def handleClick(self, position, rightClick):
         # if we have lost do not handle clicks anymore
+        print(position)
         if(self.board.getExplode()):
             return
         # gets index of piece that was clicked
