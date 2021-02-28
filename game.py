@@ -27,12 +27,13 @@ class Game():
                     # checks if click was right click or left click
                     rightClick = pygame.mouse.get_pressed()[2]
 
-                    self.board.cleanDictionary()
-
-                    print(self.board.finishedList)
-
                     # handles the click based on what was pressed 
                     self.handleClick(position, rightClick)
+
+                    self.board.cleanDictionary()
+
+                    print("Last:")
+                    print(self.board.boardStatus)
                 self.drawBoard()
                 pygame.display.flip()
                 if(self.board.getWon()):
@@ -92,14 +93,11 @@ class Game():
         # updates the status of the agent
         self.board.setBoardStatus(piece)
 
-        print(self.board.boardStatus)
-
-
         # Agent does stuff
-        # ...
-        # ...
-        # # 
+        self.board.initializePieces()
 
+        print("middle:")
+        print(self.board.boardStatus)
 
 
         

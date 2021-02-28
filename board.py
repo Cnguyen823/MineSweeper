@@ -169,22 +169,17 @@ class Board():
                 values[4] = "N/A"
             elif values[0] - values[2] == values[3]:
                 values[4] = "NeighborsAreBombs"
-            elif (8 - values[0]) - values[1] == values[3]:
-                if not self.isBorder(keys):
-                    values[4] = "NeighborsAreSafe"
-                else:
-                    values[4] = "Unsure"
+            elif values[0] == values[2]:
+                values[4] = "NeighborsAreSafe"
             else:
                 values[4] = "Unsure"
-
-    def isBorder(self, index):
-        if index[0] == 0 or index[1] == 0 or index[0] == self.dim[0]-1 or index[1] == self.dim[0]-1:
-            return True
-        return False
     
+    # cleans the dictionary holding the pieces of board
     def cleanDictionary(self):
         for keys, values in self.boardStatus.copy().items():
-            if values[4] == "NeighborsAreBombs" or values[3] == 0 or values[4] == "NeighborsAreSafe":
+            # cleans if all the Neighbors Are bombs, if there are no more hidden neighbors, and if all Neighbors are safe
+            # if values[4] == "NeighborsAreBombs" or values[3] == 0 or values[4] == "NeighborsAreSafe":
+            if values[3] == 0 :
                 self.boardStatus.pop(keys)
                 self.finishedList.append(keys)
 
@@ -194,6 +189,36 @@ class Board():
     
     def getWon(self):
         return self.numNonBombs == self.numClicked
+
+    # commits the changes for the agent based of the clues
+    def initializePieces (self) :
+        print(self.boardStatus)
+        
+        for keys, values in self.boardStatus.copy().items():
+            self.setDictionaryStrategy()
+            if values[4] == "NeighborsAreBombs":
+                piece = self.getPiece(keys)
+                self.setAllFlag(piece)
+            elif values[4] == "NeighborsAreSafe":
+                piece = self.getPiece(keys)
+                self.revealAllNeighbors(piece)
+
+    # set all neighbors of a piece to be flagged if it has not been clicked or flagged already
+    def setAllFlag (self, piece):
+        for neighbor in piece.getNeighbors():   
+            if neighbor.getClicked() or neighbor.getFlagged() :
+                continue
+            else :
+                self.handleClick(neighbor,True)
+    
+    # click all neighbors if all hidden neighbors around the piece are safe
+    def revealAllNeighbors (self, piece):
+        for neighbor in piece.getNeighbors():
+            if neighbor.getClicked() or neighbor.getFlagged() :
+                continue
+            else :
+                self.handleClick(neighbor,False)   
+                self.setBoardStatus(neighbor)                 
 
     
 
