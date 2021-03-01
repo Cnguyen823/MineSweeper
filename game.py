@@ -18,6 +18,8 @@ class Game():
         pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(self.screenSize[0] // 2, self.screenSize[1] // 2)))
 
         while running:
+            self.postEvent()
+
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
                     pygame.quit()
@@ -33,7 +35,7 @@ class Game():
                     elif event.button == 3:
                         rightClick = True
                     
-                    print(rightClick)
+                    # print(rightClick)
 
                     # handles the click based on what was pressed 
                     self.handleClick(event.pos, rightClick)
@@ -53,6 +55,51 @@ class Game():
                     print("sucks to suck")
                     running = False
 
+    def postEvent(self):
+        for keys, values in self.board.boardStatus.items():
+            if values[4] == "NeighborsAreSafe":
+                print("Key is here in NeighborsAreSafe: ", keys)
+                piece = self.board.getPiece(keys)
+                for neighbor in piece.getNeighbors():
+                    if neighbor.getFlagged() or neighbor.getClicked():
+                        continue
+                    else:
+                        post = neighbor.getIndex()
+                        postX = post[1] * self.imageSize[1]
+                        postY = post[0] * self.imageSize[0]
+                        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(postX, postY)))
+                        print("This is post in NeighborsAreSafe: ",post)
+                        return
+            elif values[4] == "NeighborsAreBombs":
+                print("Key is here in NeighborsAreBombs: ", keys)
+                piece = self.board.getPiece(keys)
+                for neighbor in piece.getNeighbors():
+                    if neighbor.getFlagged() or neighbor.getClicked():
+                        continue
+                    else:
+                        post = neighbor.getIndex()
+                        postX = post[1] * self.imageSize[1]
+                        postY = post[0] * self.imageSize[0]
+                        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=3, pos=(postX, postY)))
+                        print("This is post in NeighborsAreBombs: ",post)
+                        return
+        
+        self.postRandomEvent()
+
+    def postRandomEvent(self):
+        for key in self.board.boardStatus:
+            print("This is the key in random event: ", key)
+            randomPiece = self.board.getPiece(key)
+            for neighbor in randomPiece.getNeighbors():
+                if neighbor.getFlagged() or neighbor.getClicked():
+                    continue
+                else:
+                    post = neighbor.getIndex()
+                    postX = post[1] * self.imageSize[1]
+                    postY = post[0] * self.imageSize[0]
+                    pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(postX, postY)))
+                    print("This is post in NeighborsAreSafe: ",post)
+                    return
 
     def drawBoard(self):
         topLeft = (0,0)
@@ -88,11 +135,13 @@ class Game():
     # Converts positon into an index
     def handleClick(self, position, rightClick):
         # if we have lost do not handle clicks anymore
-        print(position)
+        print("This is position: ", position)
         if(self.board.getExplode()):
             return
         # gets index of piece that was clicked
+        # print("Positon[1]: ", position[1], "imageSize[1]: ", self.imageSize[1], "position[0]: ", position[0], "imageSize[0]: ", self.imageSize[0])
         index = position[1] // self.imageSize[1], position[0] // self.imageSize[0]
+        # print("This is the index in handClick: ", index)
 
         # grabs the piece from the board
         piece = self.board.getPiece(index)
