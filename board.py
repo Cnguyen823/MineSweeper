@@ -14,19 +14,25 @@ class Board():
         self.flagList = []
         self.finishedList = []
 
+    # set all the pieces in the board
     def setBoard(self):
         self.board = []
         for row in range(self.dim[0]):
             row = []
             for col in range(self.dim[1]):
+                # generate a random boolean for a bomb and set the piece as a bomb based on it
                 isBomb = random() < self.p
                 if (not isBomb):
+                    # increment the number of bombs on the board
                     self.numNonBombs += 1
+                # set the piece as a bomb
                 piece = Piece(isBomb)
+                # append the piece to the board
                 row.append(piece)
             self.board.append(row)
         self.setNeighbors()
 
+    # set all the neighbors for each piece
     def setNeighbors(self):
         for row in range(self.dim[0]):
             for col in range(self.dim[1]):
@@ -34,10 +40,12 @@ class Board():
                 neighbors = self.getListOfNeighbors((row, col))
                 piece.setNeighbors(neighbors)
 
+    # get all the neighbors of a piece passed
     def getListOfNeighbors(self, index):
         neighbors = []
         for row in range(index[0] - 1, index[0] + 2):
             for col in range(index[1] - 1, index[1] + 2):
+                # do not count it as a neighbor if the coordinate is out of bounds
                 outOfBounds = row < 0 or row >= self.dim[0] or col < 0 or col >= self.dim[1]
                 same = row == index[0] and col == index[1]
                 if (same or outOfBounds):
@@ -45,9 +53,11 @@ class Board():
                 neighbors.append(self.getPiece((row, col)))
         return neighbors
 
+    # return the size of the board
     def getSize(self):
         return self.dim
 
+    # return the piece based on a passed in index
     def getPiece(self, index):
         return self.board[index[0]][index[1]]
 
@@ -151,6 +161,7 @@ class Board():
         if piece.getIndex() in self.finishedList:
             return
 
+        # Check each neighbor of a piece for mines, safe, and hidden neighbors
         for neighbor in piece.getNeighbors():
             if neighbor.getFlagged():
                 mineNeighbors += 1
@@ -161,8 +172,10 @@ class Board():
 
         value = [clue, safeNeighbors, mineNeighbors, hiddenNeighbors, "N/A"]
 
+        # append all the found values for each neighbor into the boardStatus dictionary
         self.boardStatus[piece.getIndex()] = value
  
+    # set whether the neighbors of a piece can determined definitvely based on the basic strategy
     def setDictionaryStrategy(self):
         for keys, values in self.boardStatus.items():
             if values[0] == 0:
@@ -178,7 +191,6 @@ class Board():
     def cleanDictionary(self):
         for keys, values in self.boardStatus.copy().items():
             # cleans if all the Neighbors Are bombs, if there are no more hidden neighbors, and if all Neighbors are safe
-            # if values[4] == "NeighborsAreBombs" or values[3] == 0 or values[4] == "NeighborsAreSafe":
             if values[3] == 0 :
                 self.boardStatus.pop(keys)
                 self.finishedList.append(keys)
@@ -190,9 +202,8 @@ class Board():
     def getWon(self):
         return self.numNonBombs == self.numClicked
 
-    # commits the changes for the agent based of the clues
+    # commits the changes for the agent's knowledge based off the clues
     def initializePieces (self) :
-        print(self.boardStatus)
         
         for keys, values in self.boardStatus.copy().items():
             self.setDictionaryStrategy()

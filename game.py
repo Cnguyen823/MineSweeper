@@ -1,6 +1,7 @@
 import pygame
 import os
 from time import sleep
+import random
 
 class Game():
     def __init__(self, board, screenSize):
@@ -9,15 +10,19 @@ class Game():
         self.imageSize = self.screenSize[0] // self.board.getSize()[1], self.screenSize[1] // self.board.getSize()[0]
         self.loadImages()
     
+    #Runs Mine Sweeper
     def run(self):
         pygame.init()
         self.gui = pygame.display.set_mode(self.screenSize)
         running = True
         rightClick = False
 
-        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(self.screenSize[0] // 2, self.screenSize[1] // 2)))
+        #Initiates first random click
+        self.postRandomEvent()
 
         while running:
+            sleep(1)
+            # posts the next even to be completed
             self.postEvent()
 
             for event in pygame.event.get():
@@ -35,30 +40,32 @@ class Game():
                     elif event.button == 3:
                         rightClick = True
                     
-                    # print(rightClick)
-
                     # handles the click based on what was pressed 
                     self.handleClick(event.pos, rightClick)
 
+                    # cleans the clues from board dictionary that we no longer need
                     self.board.cleanDictionary()
 
-                    print("Last:")
-                    print(self.board.boardStatus)
+               
                 self.drawBoard()
                 pygame.display.flip()
                 if(self.board.getWon()):
-                    #sound.play()
-                    #sleep(3)
+                    pygame.mixer.music.load("audio/Armenia.mp3")
+                    pygame.mixer.music.play(start=12)
+                    sleep(8)
                     print("You Have Won!");
                     running = False
                 elif (self.board.getExplode()):
+                    pygame.mixer.music.load("audio/loser.mp3")
+                    pygame.mixer.music.play()
+                    sleep(3)
                     print("sucks to suck")
                     running = False
 
+# Based on current clues implements the basic strategies and posts the event for the next iteration
     def postEvent(self):
         for keys, values in self.board.boardStatus.items():
             if values[4] == "NeighborsAreSafe":
-                print("Key is here in NeighborsAreSafe: ", keys)
                 piece = self.board.getPiece(keys)
                 for neighbor in piece.getNeighbors():
                     if neighbor.getFlagged() or neighbor.getClicked():
@@ -68,10 +75,8 @@ class Game():
                         postX = post[1] * self.imageSize[1]
                         postY = post[0] * self.imageSize[0]
                         pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(postX, postY)))
-                        print("This is post in NeighborsAreSafe: ",post)
                         return
             elif values[4] == "NeighborsAreBombs":
-                print("Key is here in NeighborsAreBombs: ", keys)
                 piece = self.board.getPiece(keys)
                 for neighbor in piece.getNeighbors():
                     if neighbor.getFlagged() or neighbor.getClicked():
@@ -81,25 +86,23 @@ class Game():
                         postX = post[1] * self.imageSize[1]
                         postY = post[0] * self.imageSize[0]
                         pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=3, pos=(postX, postY)))
-                        print("This is post in NeighborsAreBombs: ",post)
                         return
         
         self.postRandomEvent()
 
+# add a random click event to queue to be executed next iteration
     def postRandomEvent(self):
-        for key in self.board.boardStatus:
-            print("This is the key in random event: ", key)
-            randomPiece = self.board.getPiece(key)
-            for neighbor in randomPiece.getNeighbors():
-                if neighbor.getFlagged() or neighbor.getClicked():
-                    continue
-                else:
-                    post = neighbor.getIndex()
-                    postX = post[1] * self.imageSize[1]
-                    postY = post[0] * self.imageSize[0]
-                    pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(postX, postY)))
-                    print("This is post in NeighborsAreSafe: ",post)
-                    return
+        while True:
+            post = (random.randint(0,self.board.dim[0]-1), random.randint(0,self.board.dim[1]-1))
+            piece = self.board.getPiece(post)
+            if piece.getClicked() or piece.getFlagged():
+                continue
+            else:
+                postX = post[1] * self.imageSize[1]
+                postY = post[0] * self.imageSize[0]
+                pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(postX, postY)))
+                return
+
 
     def drawBoard(self):
         topLeft = (0,0)
@@ -135,13 +138,10 @@ class Game():
     # Converts positon into an index
     def handleClick(self, position, rightClick):
         # if we have lost do not handle clicks anymore
-        print("This is position: ", position)
         if(self.board.getExplode()):
             return
         # gets index of piece that was clicked
-        # print("Positon[1]: ", position[1], "imageSize[1]: ", self.imageSize[1], "position[0]: ", position[0], "imageSize[0]: ", self.imageSize[0])
         index = position[1] // self.imageSize[1], position[0] // self.imageSize[0]
-        # print("This is the index in handClick: ", index)
 
         # grabs the piece from the board
         piece = self.board.getPiece(index)
@@ -152,11 +152,10 @@ class Game():
         # updates the status of the agent
         self.board.setBoardStatus(piece)
 
-        # Agent does stuff
+        # Agents grabs its clues
         self.board.initializePieces()
 
-        print("middle:")
-        print(self.board.boardStatus)
+       
 
 
         
