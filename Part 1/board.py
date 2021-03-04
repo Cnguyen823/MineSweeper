@@ -1,10 +1,11 @@
 from piece import Piece
 from random import random
+from time import sleep
+
 class Board():
     def __init__(self, dim, p):
         self.dim = dim
         self.p = p
-        self.explode = False
         self.won = False
         self.numClicked = 0
         self.numNonBombs = 0
@@ -13,6 +14,7 @@ class Board():
         self.boardStatus = {}
         self.flagList = []
         self.finishedList = []
+        self.bombList = []
 
     # set all the pieces in the board
     def setBoard(self):
@@ -79,9 +81,12 @@ class Board():
         # else we left clicked
         piece.click()
 
-        # if the piece that we clicked has bomb we explode
+        # if the piece that we clicked has bomb 
         if (piece.getIsBomb()):
-            self.explode = True
+            print(self.boardStatus)         
+            for neighbor in piece.getNeighbors():
+                self.updateNeighborStatus(neighbor)
+            self.bombList.append(piece.getIndex())
             return
         
         # increment how many piece we have clicked
@@ -104,7 +109,7 @@ class Board():
         hiddenNeighbors = 0
         clue = piece.getNumOfBombs()
 
-        # if piece is bomb dont keep track end game
+        # if piece is bomb
         if piece.getIsBomb():
             return
 
@@ -133,6 +138,8 @@ class Board():
                 if indexOfPiece not in self.flagList:
                     temp = self.boardStatus.pop(indexOfPiece,None)
                     self.flagList.append(indexOfPiece)
+            elif neighbor.getClicked() and neighbor.getIsBomb():
+                mineNeighbors += 1
             elif neighbor.getClicked():
                 safeNeighbors += 1
                 self.updateNeighborStatus(neighbor)
@@ -154,16 +161,19 @@ class Board():
         hiddenNeighbors = 0
         clue = piece.getNumOfBombs()
         
+        if piece.getIsBomb():
+            return
         # Dont Update if its a flag
         if piece.getFlagged() or not piece.getClicked():
             return
-
         if piece.getIndex() in self.finishedList:
             return
 
         # Check each neighbor of a piece for mines, safe, and hidden neighbors
         for neighbor in piece.getNeighbors():
             if neighbor.getFlagged():
+                mineNeighbors += 1
+            elif neighbor.getClicked() and neighbor.getIsBomb():
                 mineNeighbors += 1
             elif neighbor.getClicked():
                 safeNeighbors += 1
@@ -194,10 +204,6 @@ class Board():
             if values[3] == 0 :
                 self.boardStatus.pop(keys)
                 self.finishedList.append(keys)
-
-    
-    def getExplode(self):
-        return self.explode
     
     def getWon(self):
         return self.numNonBombs == self.numClicked

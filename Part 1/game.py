@@ -52,18 +52,13 @@ class Game():
                 if(self.board.getWon()):
                     pygame.mixer.music.load("audio/Armenia.mp3")
                     pygame.mixer.music.play(start=12)
-                    sleep(8)
+                    sleep(10)
                     print("You Have Won!");
-                    running = False
-                elif (self.board.getExplode()):
-                    pygame.mixer.music.load("audio/loser.mp3")
-                    pygame.mixer.music.play()
-                    sleep(3)
-                    print("sucks to suck")
                     running = False
 
 # Based on current clues implements the basic strategies and posts the event for the next iteration
     def postEvent(self):
+        self.board.setDictionaryStrategy();
         for keys, values in self.board.boardStatus.items():
             if values[4] == "NeighborsAreSafe":
                 piece = self.board.getPiece(keys)
@@ -137,9 +132,6 @@ class Game():
     
     # Converts positon into an index
     def handleClick(self, position, rightClick):
-        # if we have lost do not handle clicks anymore
-        if(self.board.getExplode()):
-            return
         # gets index of piece that was clicked
         index = position[1] // self.imageSize[1], position[0] // self.imageSize[0]
 
