@@ -252,42 +252,41 @@ class Board():
         for key in self.boardStatus.keys():
             piece = self.getPiece(key)
             self.setHiddenList(piece)
-            self.normal_form(piece)
+            piece.setNormalFormSet(self.normal_form(piece))
 
             for neighbors in piece.getNeighbors():
                 if neighbors.getClicked() and not neighbors.getIsBomb() and neighbors.getIndex() not in self.finishedList and neighbors.getIndex() not in self.boardStatus.keys():
                     self.setHiddenList(neighbors)
-                    self.normal_form(neighbors)
+                    piece.setNormalFormSet(self.normal_form(neighbors))
 
-
-            
+            print("This is the final normalFormSet: ", piece.getNormalFormSet())
 
     def normal_form(self, piece):
-        print("Piece: ", piece.getIndex())
-        print("Neighbors: ", piece.getHiddenNeighbors())
+        # print("Piece: ", piece.getIndex())
+        # print("Neighbors: ", piece.getHiddenNeighbors())
 
         length = len(piece.getHiddenNeighbors())
         if length > 3: return
         index = piece.getIndex()
         value = self.boardStatus.get(index)
-        print("This is value: ", value)
+        # print("This is value: ", value)
         if value[0] == None:
-            return
+            return None
         
         clue = value[0]
-        print(clue)
+        # print(clue)
         permList = []
 
         for neighbors in piece.getHiddenNeighbors():
-            temp = [neighbors, 1]
+            temp = (neighbors, 1)
             permList.append(temp)
-            temp = [neighbors, 0]
+            temp = (neighbors, 0)
             permList.append(temp)
         
         inputs = permutations(permList, length)
         tempList = []
         answer = []
-        final = []
+        final = set()
         sum = 0
 
         for i in inputs: 
@@ -300,16 +299,16 @@ class Board():
                 for n in range(0, length):
                     tempList.append(i[n][0])
                 temp = tempList
-                print("Temp:", temp)
-                print("Set temp: ", set(temp))
+                # print("Temp:", temp)
+                # print("Set temp: ", set(temp))
                 # print(temp)
                 if(len(set(temp)) == len(temp)):
-                    print("I am here")
+                    # print("I am here")
                     answer.append(i)
                 temp.clear()
                 tempList.clear()
 
-        print("Answer: ", answer)
+        # print("Answer: ", answer)
 
         neighbors = piece.getHiddenNeighbors()
 
@@ -326,11 +325,18 @@ class Board():
                     append = False
                     break
             if(append == True):
-                final.append(answer[x])
+                # print("Answer[x]: ", type(answer[x]))
+                # print("Answer[x]: ", type(tuple(answer[x])))
+                
+                # print("Answer[x] after conversion: ", answer[x])
+
+                final.add(answer[x])
                 append = False
 
-        print("Final Answer: ", final)
-        print(len(final))
+        print("Final: ", final)
+        # print(len(final))
+
+        return final
 
         
 

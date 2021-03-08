@@ -50,8 +50,8 @@ class Game():
                 self.drawBoard()
                 pygame.display.flip()
                 if(self.board.getWon()):
-                    pygame.mixer.music.load("audio/Armenia.mp3")
-                    pygame.mixer.music.play(start=12)
+                    # pygame.mixer.music.load("audio/Armenia.mp3")
+                    # pygame.mixer.music.play(start=12)
                     sleep(10)
                     print("You Have Won!");
                     running = False

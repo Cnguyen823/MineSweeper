@@ -37,7 +37,6 @@ for x in range(0, len(answer)):
 print(final)
 print(len(final))
 
-
 # inputs = permutations([1, 0, 0], 3)
 # for i in inputs:
 #     if True:
