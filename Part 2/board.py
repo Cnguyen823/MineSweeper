@@ -278,19 +278,22 @@ class Board():
         permList = []
 
         for neighbors in piece.getHiddenNeighbors():
-            temp = (neighbors, 1)
+            temp = [neighbors, 1]
             permList.append(temp)
-            temp = (neighbors, 0)
+            temp = [neighbors, 0]
             permList.append(temp)
         
         inputs = permutations(permList, length)
+        print("This is permList: ", permList)
         tempList = []
         answer = []
-        final = set()
+        final = []
         sum = 0
 
-        for i in inputs: 
-            # print(i)
+        res = [list(i) for i in inputs]
+
+        for i in res: 
+            print("This is i: ", i)
             sum = 0
             for n in range(0, length):
                 sum += i[n][1]
@@ -330,7 +333,7 @@ class Board():
                 
                 # print("Answer[x] after conversion: ", answer[x])
 
-                final.add(answer[x])
+                final.append(answer[x])
                 append = False
 
         print("Final: ", final)

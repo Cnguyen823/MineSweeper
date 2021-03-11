@@ -5,7 +5,7 @@ class Piece():
         self.flagged = False
         self.index = ()
         self.hiddenNeighbors = []
-        self.normalFormSet = set()
+        self.normalFormSet = []
 
     def getIsBomb(self):
         return self.isBomb
@@ -53,8 +53,7 @@ class Piece():
     def setNormalFormSet(self, normalFormSet):
         if normalFormSet != None:
             print("Greetings")
-            temp = set(normalFormSet)
-            self.normalFormSet = temp
+            self.normalFormSet = normalFormSet
 
     def getNormalFormSet(self):
         return self.normalFormSet
