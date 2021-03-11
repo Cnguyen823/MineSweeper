@@ -84,7 +84,6 @@ class Board():
 
         # if the piece that we clicked has bomb 
         if (piece.getIsBomb()):
-            print(self.boardStatus)         
             for neighbor in piece.getNeighbors():
                 self.updateNeighborStatus(neighbor)
             self.bombList.append(piece.getIndex())
@@ -255,26 +254,110 @@ class Board():
             piece.setNormalFormSet(self.normal_form(piece))
 
             for neighbors in piece.getNeighbors():
-                if neighbors.getClicked() and not neighbors.getIsBomb() and neighbors.getIndex() not in self.finishedList and neighbors.getIndex() not in self.boardStatus.keys():
+                if neighbors.getClicked() and not neighbors.getIsBomb() and neighbors.getIndex() not in self.finishedList:
                     self.setHiddenList(neighbors)
-                    piece.setNormalFormSet(self.normal_form(neighbors))
+                    neighbors.setNormalFormSet(self.normal_form(neighbors))
+                    isValid = self.inferenceInitializer(piece, neighbors)
+
+                    if isValid != -1:
+                        print("WE GOT AN INFERENCE")
+                        # post and return
 
             print("This is the final normalFormSet: ", piece.getNormalFormSet())
+    
+    def inferenceInitializer (self, piece, neighbor):
+        inference1 = piece.getNormalFormSet()
+        inference2 = neighbor.getNormalFormSet()
+
+        temp1 = piece.getHiddenNeighbors()
+        temp2 = neighbor.getHiddenNeighbors()
+
+        leastRecurring = set()
+        b = 0
+        checkInference = 0
+        checkList = []
+
+        if len(temp1) == len(temp2):
+            print(-1)
+            return -1
+        elif set(temp1).issubset(set(temp2)):
+            print("Difference: ", set(temp2).difference(set(temp1)))
+            leastRecurring = tuple(set(temp2).difference(set(temp1)))
+            checkList = list(inference2)
+            checkInference = 1
+        elif set(temp2).issubset(set(temp1)):
+            print("Difference: ", set(temp1).difference(set(temp2)))
+            leastRecurring = tuple(set(temp1).difference(set(temp2)))
+            checkList = list(inference1) 
+            checkInference = 2
+        else:
+            print(-1)
+            return -1
+
+        res = [list(ele) for ele in checkList]
+
+        delete = False 
+
+        for i in checkList:
+            for j in i:
+                if j[0] == leastRecurring[0]:
+                    if j[1] == b:
+                        j[1] = 1
+                    else:
+                        j[1] = 0
+            
+        print(checkList)
+
+        checkList = [ i for i in checkList for j in i if j[0] == leastRecurring[0] and j[1] == 1]
+
+        for i in checkList:
+            for j in i:
+                if j[0] == leastRecurring[0]:
+                    i.remove(j)
+
+
+        print(checkList)
+
+        answer = False
+
+        if checkInference == 1:
+            final = inference1
+        elif checkInference == 2:
+            final = inference2
+
+        print("Final: ", final)
+
+        listToPost = []
+
+        for i in final:
+            print(i)
+            for j in checkList:
+                if j == i:
+                    print("J[0]: ", j[0][0])
+                    print("B remains true")
+                    answer = True
+                    listToPost.append(j[0][0])
+                    break
+            if answer == True:
+                return 1
+                break
+
+        if answer == False:
+            b = not b
+            print(b)
+            print("B is a contradiction")
+            return 1
 
     def normal_form(self, piece):
-        # print("Piece: ", piece.getIndex())
-        # print("Neighbors: ", piece.getHiddenNeighbors())
 
         length = len(piece.getHiddenNeighbors())
         if length > 3: return
         index = piece.getIndex()
         value = self.boardStatus.get(index)
-        # print("This is value: ", value)
         if value[0] == None:
             return None
         
         clue = value[0]
-        # print(clue)
         permList = []
 
         for neighbors in piece.getHiddenNeighbors():
@@ -302,16 +385,11 @@ class Board():
                 for n in range(0, length):
                     tempList.append(i[n][0])
                 temp = tempList
-                # print("Temp:", temp)
-                # print("Set temp: ", set(temp))
-                # print(temp)
+
                 if(len(set(temp)) == len(temp)):
-                    # print("I am here")
                     answer.append(i)
                 temp.clear()
                 tempList.clear()
-
-        # print("Answer: ", answer)
 
         neighbors = piece.getHiddenNeighbors()
 
@@ -320,24 +398,16 @@ class Board():
 
         for x in range(0, len(answer)):
             for n in range(0, length):
-                # print("Check1: ", answer[x][n][0])
-                # print("Check2: ", neighbors[n])
                 if(answer[x][n][0] == neighbors[n]):
                     append = True
                 else:
                     append = False
                     break
             if(append == True):
-                # print("Answer[x]: ", type(answer[x]))
-                # print("Answer[x]: ", type(tuple(answer[x])))
-                
-                # print("Answer[x] after conversion: ", answer[x])
-
                 final.append(answer[x])
                 append = False
 
         print("Final: ", final)
-        # print(len(final))
 
         return final
 
