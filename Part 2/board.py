@@ -266,8 +266,15 @@ class Board():
             print("This is the final normalFormSet: ", piece.getNormalFormSet())
     
     def inferenceInitializer (self, piece, neighbor):
+        print("This is Index piece:", piece.getIndex())
+        print("This is Index neighbor:", neighbor.getIndex())
+
         inference1 = piece.getNormalFormSet()
         inference2 = neighbor.getNormalFormSet()
+
+        print("Inference 1:", inference1)
+        print("Inference 2:", inference2)
+
 
         temp1 = piece.getHiddenNeighbors()
         temp2 = neighbor.getHiddenNeighbors()
@@ -278,7 +285,6 @@ class Board():
         checkList = []
 
         if len(temp1) == len(temp2):
-            print(-1)
             return -1
         elif set(temp1).issubset(set(temp2)):
             print("Difference: ", set(temp2).difference(set(temp1)))
@@ -291,7 +297,6 @@ class Board():
             checkList = list(inference1) 
             checkInference = 2
         else:
-            print(-1)
             return -1
 
         res = [list(ele) for ele in checkList]
@@ -330,11 +335,8 @@ class Board():
         listToPost = []
 
         for i in final:
-            print(i)
             for j in checkList:
                 if j == i:
-                    print("J[0]: ", j[0][0])
-                    print("B remains true")
                     answer = True
                     listToPost.append(j[0][0])
                     break
@@ -376,7 +378,6 @@ class Board():
         res = [list(i) for i in inputs]
 
         for i in res: 
-            print("This is i: ", i)
             sum = 0
             for n in range(0, length):
                 sum += i[n][1]
