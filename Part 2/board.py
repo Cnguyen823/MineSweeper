@@ -259,13 +259,14 @@ class Board():
                     self.updateNeighborStatus(neighbors)
                     self.setHiddenList(neighbors)
                     neighbors.setNormalFormSet(self.normal_form(neighbors))
+                    
                     isValid = self.inferenceInitializer(piece, neighbors)
 
                     if isValid != -1:
                         print("WE GOT AN INFERENCE")
                         # post and return
 
-            print("This is the final normalFormSet: ", piece.getNormalFormSet())
+            # print("This is the final normalFormSet: ", piece.getNormalFormSet())
     
     def inferenceInitializer (self, piece, neighbor):
         print("This is Index piece:", piece.getIndex())
@@ -396,7 +397,10 @@ class Board():
         if value[0] == None:
             return None
         
-        clue = value[0]
+        clue = value[0] - value[2] # clue value - number of bombs around the clue
+        if clue == 0:
+            return None
+
         permList = []
 
         for neighbors in piece.getHiddenNeighbors():
@@ -406,7 +410,7 @@ class Board():
             permList.append(temp)
         
         inputs = permutations(permList, length)
-        print("This is permList: ", permList)
+        # print("This is permList: ", permList)
         tempList = []
         answer = []
         final = []
@@ -445,7 +449,7 @@ class Board():
                 final.append(answer[x])
                 append = False
 
-        print("Final: ", final)
+        # print("Final: ", final)
 
         return final
 
