@@ -250,11 +250,13 @@ class Board():
     def inference (self):
         for key in self.boardStatus.keys():
             piece = self.getPiece(key)
+            self.updateNeighborStatus(piece)
             self.setHiddenList(piece)
             piece.setNormalFormSet(self.normal_form(piece))
 
             for neighbors in piece.getNeighbors():
                 if neighbors.getClicked() and not neighbors.getIsBomb() and neighbors.getIndex() not in self.finishedList:
+                    self.updateNeighborStatus(neighbors)
                     self.setHiddenList(neighbors)
                     neighbors.setNormalFormSet(self.normal_form(neighbors))
                     isValid = self.inferenceInitializer(piece, neighbors)
@@ -306,6 +308,7 @@ class Board():
         for i in checkList:
             for j in i:
                 if j[0] == leastRecurring[0]:
+                    print(j[1])
                     if j[1] == b:
                         j[1] = 1
                     else:
@@ -321,7 +324,7 @@ class Board():
                     i.remove(j)
 
 
-        print(checkList)
+        print("Checklist: ", checkList)
 
         answer = False
 
@@ -335,7 +338,10 @@ class Board():
         listToPost = []
 
         for i in final:
+            print("I: ", i)
             for j in checkList:
+                print("J :", j)
+                print("Hello0ooooooooo")
                 if j == i:
                     answer = True
                     listToPost.append(j[0][0])
@@ -349,6 +355,8 @@ class Board():
             print(b)
             print("B is a contradiction")
             return 1
+        else:
+            print("B is not a contradiction")
 
     def normal_form(self, piece):
 
