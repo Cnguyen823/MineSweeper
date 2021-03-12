@@ -277,6 +277,9 @@ class Board():
         print("Inference 1:", inference1)
         print("Inference 2:", inference2)
 
+        if not inference1 or not inference2:
+            return -1
+
 
         temp1 = piece.getHiddenNeighbors()
         temp2 = neighbor.getHiddenNeighbors()
@@ -291,12 +294,14 @@ class Board():
         elif set(temp1).issubset(set(temp2)):
             print("Difference: ", set(temp2).difference(set(temp1)))
             leastRecurring = tuple(set(temp2).difference(set(temp1)))
-            checkList = list(inference2)
+            for i in inference2:
+                checkList.append(i)
             checkInference = 1
         elif set(temp2).issubset(set(temp1)):
             print("Difference: ", set(temp1).difference(set(temp2)))
             leastRecurring = tuple(set(temp1).difference(set(temp2)))
-            checkList = list(inference1) 
+            for i in inference1:
+                checkList.append(i)
             checkInference = 2
         else:
             return -1
@@ -305,26 +310,50 @@ class Board():
 
         delete = False 
 
-        for i in checkList:
-            for j in i:
-                if j[0] == leastRecurring[0]:
-                    print(j[1])
-                    if j[1] == b:
-                        j[1] = 1
-                    else:
-                        j[1] = 0
-            
-        print(checkList)
+        # updatedCheckList = []
 
-        checkList = [ i for i in checkList for j in i if j[0] == leastRecurring[0] and j[1] == 1]
+        # for i in checkList:
+        #     tempListUpdate = []
+        #     for j in range(0,len(i)):
+        #         print(i[j])
+                
+        #         if i[j][0] == leastRecurring[0]:
+        #             print(i[j][1])
+        #             if i[j][1] == b:
+        #                 print("change")
+        #                 # i[j][1] = 1
+        #                 tempListUpdate.append([i[j][0], 1])
+        #                 print("during change 1", tempListUpdate)
+        #             else:
+        #                 # i[j][1] = 0
+        #                 tempListUpdate.append([i[j][0], 0])
+        #                 print("during change 0", tempListUpdate)
+        #         else:
+        #             tempListUpdate.append(i[j])
+
+        #     updatedCheckList.append(tempListUpdate)
+        #     print("UpdatedCheckList: ", updatedCheckList)
+            
+        # print(checkList)
+
+        # updatedCheckList = [ i for i in updatedCheckList for j in i if j[0] == leastRecurring[0] and j[1] == 1]
+
+        # for i in updatedCheckList:
+        #     for j in i:
+        #         if j[0] == leastRecurring[0]:
+        #             i.remove(j)
+
+
+        # print("Checklist: ", updatedCheckList)
+
+        checkList = [ i for i in checkList for j in i if j[0] == leastRecurring[0] and j[1] == 0]
 
         for i in checkList:
             for j in i:
                 if j[0] == leastRecurring[0]:
                     i.remove(j)
 
-
-        print("Checklist: ", checkList)
+        print("HIIIIIIII: ", checkList)
 
         answer = False
 
