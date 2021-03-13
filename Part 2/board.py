@@ -263,10 +263,11 @@ class Board():
                     isValid = self.inferenceInitializer(piece, neighbors)
 
                     if isValid != -1:
-                        print("WE GOT AN INFERENCE")
-                        # post and return
+                        print("This is difference we are posting", isValid)
+                        return isValid;
+        
+        return -1
 
-            # print("This is the final normalFormSet: ", piece.getNormalFormSet())
     
     def inferenceInitializer (self, piece, neighbor):
         print("This is Index piece:", piece.getIndex())
@@ -311,42 +312,6 @@ class Board():
 
         delete = False 
 
-        # updatedCheckList = []
-
-        # for i in checkList:
-        #     tempListUpdate = []
-        #     for j in range(0,len(i)):
-        #         print(i[j])
-                
-        #         if i[j][0] == leastRecurring[0]:
-        #             print(i[j][1])
-        #             if i[j][1] == b:
-        #                 print("change")
-        #                 # i[j][1] = 1
-        #                 tempListUpdate.append([i[j][0], 1])
-        #                 print("during change 1", tempListUpdate)
-        #             else:
-        #                 # i[j][1] = 0
-        #                 tempListUpdate.append([i[j][0], 0])
-        #                 print("during change 0", tempListUpdate)
-        #         else:
-        #             tempListUpdate.append(i[j])
-
-        #     updatedCheckList.append(tempListUpdate)
-        #     print("UpdatedCheckList: ", updatedCheckList)
-            
-        # print(checkList)
-
-        # updatedCheckList = [ i for i in updatedCheckList for j in i if j[0] == leastRecurring[0] and j[1] == 1]
-
-        # for i in updatedCheckList:
-        #     for j in i:
-        #         if j[0] == leastRecurring[0]:
-        #             i.remove(j)
-
-
-        # print("Checklist: ", updatedCheckList)
-
         checkList = [ i for i in checkList for j in i if j[0] == leastRecurring[0] and j[1] == 0]
 
         for i in checkList:
@@ -377,19 +342,20 @@ class Board():
                     listToPost.append(j[0][0])
                     break
             if answer == True:
-                return 1
-                break
+                print("answer true")
+                result = list(leastRecurring)
+                result.append(0)
+                return result
 
         if answer == False:
             b = not b
             print(b)
             print("B is a contradiction")
-            return 1
-        else:
-            print("B is not a contradiction")
+            result = list(leastRecurring)
+            result.append(1)
+            return result
 
     def normal_form(self, piece):
-
         length = len(piece.getHiddenNeighbors())
         if length > 3: return
         index = piece.getIndex()
