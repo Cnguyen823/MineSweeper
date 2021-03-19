@@ -22,7 +22,7 @@ class Game():
 
         while running:
             sleep(1)
-            # wait = input("Press Enter to continue.")
+            wait = input("Press Enter to continue.")
             # posts the next even to be completed
             self.postEvent()
 
