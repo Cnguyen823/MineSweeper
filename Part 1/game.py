@@ -52,8 +52,10 @@ class Game():
                 if(self.board.getWon()):
                     pygame.mixer.music.load("audio/Armenia.mp3")
                     pygame.mixer.music.play(start=12)
+
                     sleep(10)
-                    print("You Have Won!");
+                    print("Agent has finished!");
+
                     running = False
 
 # Based on current clues implements the basic strategies and posts the event for the next iteration

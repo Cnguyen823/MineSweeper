@@ -82,8 +82,7 @@ class Board():
         piece.click()
 
         # if the piece that we clicked has bomb 
-        if (piece.getIsBomb()):
-            print(self.boardStatus)         
+        if (piece.getIsBomb()):       
             for neighbor in piece.getNeighbors():
                 self.updateNeighborStatus(neighbor)
             self.bombList.append(piece.getIndex())

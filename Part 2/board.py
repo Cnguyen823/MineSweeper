@@ -263,21 +263,15 @@ class Board():
                     isValid = self.inferenceInitializer(piece, neighbors)
 
                     if isValid != -1:
-                        print("This is difference we are posting", isValid)
                         return isValid;
         
         return -1
 
     
     def inferenceInitializer (self, piece, neighbor):
-        print("This is Index piece:", piece.getIndex())
-        print("This is Index neighbor:", neighbor.getIndex())
 
         inference1 = piece.getNormalFormSet()
         inference2 = neighbor.getNormalFormSet()
-
-        print("Inference 1:", inference1)
-        print("Inference 2:", inference2)
 
         if not inference1 or not inference2:
             return -1
@@ -294,13 +288,11 @@ class Board():
         if len(temp1) == len(temp2):
             return -1
         elif set(temp1).issubset(set(temp2)):
-            print("Difference: ", set(temp2).difference(set(temp1)))
             leastRecurring = tuple(set(temp2).difference(set(temp1)))
             for i in inference2:
                 checkList.append(i)
             checkInference = 1
         elif set(temp2).issubset(set(temp1)):
-            print("Difference: ", set(temp1).difference(set(temp2)))
             leastRecurring = tuple(set(temp1).difference(set(temp2)))
             for i in inference1:
                 checkList.append(i)
@@ -319,8 +311,6 @@ class Board():
                 if j[0] == leastRecurring[0]:
                     i.remove(j)
 
-        print("HIIIIIIII: ", checkList)
-
         answer = False
 
         if checkInference == 1:
@@ -328,29 +318,21 @@ class Board():
         elif checkInference == 2:
             final = inference2
 
-        print("Final: ", final)
-
         listToPost = []
 
         for i in final:
-            print("I: ", i)
             for j in checkList:
-                print("J :", j)
-                print("Hello0ooooooooo")
                 if j == i:
                     answer = True
                     listToPost.append(j[0][0])
                     break
             if answer == True:
-                print("answer true")
                 result = list(leastRecurring)
                 result.append(0)
                 return result
 
         if answer == False:
             b = not b
-            print(b)
-            print("B is a contradiction")
             result = list(leastRecurring)
             result.append(1)
             return result
@@ -376,7 +358,6 @@ class Board():
             permList.append(temp)
         
         inputs = permutations(permList, length)
-        # print("This is permList: ", permList)
         tempList = []
         answer = []
         final = []
@@ -414,8 +395,6 @@ class Board():
             if(append == True):
                 final.append(answer[x])
                 append = False
-
-        # print("Final: ", final)
 
         return final
 

@@ -22,7 +22,7 @@ class Game():
 
         while running:
             sleep(1)
-            wait = input("Press Enter to continue.")
+            # wait = input("Press Enter to continue.")
             # posts the next even to be completed
             self.postEvent()
 
@@ -51,10 +51,10 @@ class Game():
                 self.drawBoard()
                 pygame.display.flip()
                 if(self.board.getWon()):
-                    # pygame.mixer.music.load("audio/Armenia.mp3")
-                    # pygame.mixer.music.play(start=12)
+                    pygame.mixer.music.load("audio/Armenia.mp3")
+                    pygame.mixer.music.play(start=12)
                     sleep(10)
-                    print("You Have Won!");
+                    print("You Have Finished!");
                     running = False
 
 # Based on current clues implements the basic strategies and posts the event for the next iteration
@@ -87,19 +87,12 @@ class Game():
         inferenceCheck = self.board.inference()
         
         if inferenceCheck != -1:
-            print("We are posting this index in post event", inferenceCheck)
-            print("this is the coordinate", inferenceCheck[0])
-            print("this is right click value", inferenceCheck[1])
-            print("thie is inference check [0][1]", inferenceCheck[0][1])
-            print("other inference value", inferenceCheck[0][0])
             postX = inferenceCheck[0][1] * self.imageSize[1]
             postY = inferenceCheck[0][0] * self.imageSize[0]
             if inferenceCheck[1] == 0:
-                print("posted left click inference")
                 pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=(postX, postY)))
                 return
             else :
-                print("posted right click inference")
                 pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=3, pos=(postX, postY)))
                 return
             

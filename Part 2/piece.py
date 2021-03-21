@@ -52,7 +52,6 @@ class Piece():
 
     def setNormalFormSet(self, normalFormSet):
         if normalFormSet != None:
-            print("Greetings")
             self.normalFormSet = normalFormSet
 
     def getNormalFormSet(self):

@@ -3,7 +3,8 @@ from board import Board
 
 
 size = (9, 9)
-p = 0.2
+p = 10 / (size[0] * size[1])
+# p = 0.2
 board = Board(size, p)
 screenSize = (500,500)
 game = Game(board, screenSize)
