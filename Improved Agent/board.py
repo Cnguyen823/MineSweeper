@@ -237,6 +237,7 @@ class Board():
                 self.handleClick(neighbor,False)   
                 self.setBoardStatus(neighbor)  
     
+    # gets the list of all hidden neighbors for a piece
     def setHiddenList(self, piece):
         hList = []
         for neighbor in piece.getNeighbors():
@@ -247,6 +248,7 @@ class Board():
 
         piece.setHiddenNeighbors(hList)
 
+    # performs the inference by setting the normal form for applicable pieces and checking if an inference can be made
     def inference (self):
         for key in self.boardStatus.keys():
             piece = self.getPiece(key)
@@ -267,7 +269,7 @@ class Board():
         
         return -1
 
-    
+    # Get the normal form for two pieces and checks if an inference can be made by comparing there normal forms
     def inferenceInitializer (self, piece, neighbor):
 
         inference1 = piece.getNormalFormSet()
@@ -337,6 +339,7 @@ class Board():
             result.append(1)
             return result
 
+    # Sets the normal form for a piece by using the clues and neighbors around it
     def normal_form(self, piece):
         length = len(piece.getHiddenNeighbors())
         if length > 3: return
